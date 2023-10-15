@@ -5,7 +5,7 @@ services:
   postgres:
     image: postgres
     restart: always
-    container_name: db-container
+    container_name: db-postgres-container
     environment:
       - POSTGRES_DB=bacesita
       - POSTGRES_USER=admin
@@ -27,7 +27,7 @@ services:
 
   auth-microservice:
     build: 
-      context: ./auth-microservice
+      context: ./auth-microservice/auth-microservice
       dockerfile: Dockerfile
     container_name: auth-microservice-container
     ports:
@@ -47,6 +47,7 @@ services:
       - "3005:3005"
     depends_on:
       - auth-microservice
+    command: ["npm","run","start:dev"]
 
   # Puedes agregar otros microservicios y servicios adicionales aquí
 
