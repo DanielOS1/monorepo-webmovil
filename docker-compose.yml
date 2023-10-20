@@ -38,16 +38,6 @@ services:
       - DATABASE_HOST=postgres
     command: ["/usr/wait-for-it.sh", "postgres:5432", "--", "npm", "run", "start:dev"]
 
-  gateway-gira:
-    build: 
-      context: ./gateway-gira
-      dockerfile: Dockerfile
-    container_name: api-gateway-container
-    ports:
-      - "3005:3005"
-    depends_on:
-      - auth-microservice
-    command: ["npm","run","start:dev"]
 
   # Puedes agregar otros microservicios y servicios adicionales aquí
 

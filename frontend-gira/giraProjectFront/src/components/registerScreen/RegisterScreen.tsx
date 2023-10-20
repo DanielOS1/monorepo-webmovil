@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ImageBackground } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BlurView } from 'expo-blur';
+import styles from './registerStyles';
 
 const RegisterScreen: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const navigation = useNavigation();
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
   const handleRegister = async () => {
     try {
@@ -35,40 +38,25 @@ const RegisterScreen: React.FC = () => {
     }
   };
 
+  React.useEffect(() => {
+    Animated.timing(
+      fadeAnim,
+      {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }
+    ).start();
+  }, [fadeAnim]);
 
   
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    header: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 16,
-    },
-    input: {
-      width: '100%',
-      marginBottom: 16,
-    },
-    button: {
-      width: '100%',
-      marginTop: 8,
-    },
-    loginLink: {
-      marginTop: 16,
-      color: 'blue',
-    },
-  });
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Registrarse</Text>
+
       <TextInput
-        label="Nombre de usuario" 
+        label="Nombre de usuario"
         value={username}
         onChangeText={text => setUsername(text)}
         style={styles.input}
@@ -80,31 +68,29 @@ const RegisterScreen: React.FC = () => {
         style={styles.input}
       />
       <TextInput
-        label="Contraseña" 
+        label="Contraseña"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
         style={styles.input}
       />
-      <TextInput
-        label="Confirmar contraseña" 
-        secureTextEntry
-        value={password}
-        onChangeText={text => setPassword(text)}
-        style={styles.input}
-      />
+
       <Button
-        mode="contained" 
+        mode="contained"
         onPress={handleRegister}
         style={styles.button}
+        labelStyle={styles.buttonText}
       >
         Registrarse
       </Button>
-      <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>
-        ¿Ya tienes una cuenta? Inicia Sesión aquí.
-      </Text>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.registerLink}>
+          ¿Ya tienes una cuenta? Inicia Sesión aquí.
+        </Text>
+      </TouchableOpacity>
     </View>
-  );
+);
 };
 
 export default RegisterScreen;

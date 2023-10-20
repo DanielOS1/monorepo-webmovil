@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, StyleSheet, } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ImageBackground  } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import RegisterScreen from './RegisterScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-import App  from './../../App'
-
+import { BlurView } from 'expo-blur';
+import styles from './loginStyles';
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://192.168.0.2:3005/auth/login', {
+      const response = await fetch('http://192.168.0.2:3000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,6 +30,7 @@ const LoginScreen: React.FC = () => {
       
         // Muestra un mensaje de inicio de sesión exitoso
         alert('Inicio de sesión exitoso');
+        navigation.navigate('Home')
       
         // Puedes navegar a la pantalla de inicio o realizar otras acciones
       } else {
@@ -44,66 +43,61 @@ const LoginScreen: React.FC = () => {
       console.error('Error al iniciar sesión:', error);
     }
   };
-  
-  
 
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    header: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 16,
-    },
-    input: {
-      width: '100%',
-      marginBottom: 16,
-    },
-    button: {
-      width: '100%',
-      marginTop: 8,
-    },
-    registerLink: {
-      marginTop: 16,
-      color: 'blue', // Cambia el color del enlace
-    },
-    
-  });
+  React.useEffect(() => {
+    Animated.timing(
+      fadeAnim,
+      {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }
+    ).start();
+  }, [fadeAnim]);
 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Inicio de sesión</Text>
+      <Text style={styles.header}>COLD GIRA</Text>
+  
       <TextInput
-        label="Correo Electronico" // Utilizamos label en lugar de placeholder
+        label="Correo Electronico"
         value={email}
         onChangeText={text => setEmail(text)}
         style={styles.input}
       />
       <TextInput
-        label="Contraseña" // Utilizamos label en lugar de placeholder
+        label="Contraseña"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
         style={styles.input}
       />
+  
       <Button
-        mode="contained" // Establecemos el modo a "contained" para darle un aspecto más limpio
-        onPress={() => {handleLogin()}}
+        mode="contained"
+        onPress={() => { handleLogin() }}
         style={styles.button}
+        labelStyle={styles.buttonText}
       >
         Iniciar sesión
       </Button>
-      <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}>
-        ¿No tienes una cuenta? Regístrate aquí.
-      </Text>
+  
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.registerLink}>
+          ¿No tienes una cuenta? Regístrate aquí.
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('')}>
+        <Text style={styles.registerLink}>
+          Recuperar contraseña
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
+  
+
 
 export default LoginScreen;
